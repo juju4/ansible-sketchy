@@ -1,0 +1,13 @@
+---
+
+- name: restart supervisor
+  service: name={{ supervisor_svc }} state=restarted
+## temporary fix
+  ignore_errors: true
+
+- name: restart redis
+  service: name={{ redis_svc }} state=restarted
+
+- name: restart nginx
+  service: name=nginx state=restarted
+

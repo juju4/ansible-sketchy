@@ -1,0 +1,101 @@
+---
+- name: Debian | sketchy
+  include: debian.yml
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Redhat | sketchy
+  include: redhat.yml
+  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- user: name="{{ sketchy_user }}" comment="Sketchy user" home="{{ sketchy_home }}"
+
+- stat: path=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
+  register: pjsarch
+- name: download phantomjs 1.9
+  get_url: url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
+    dest=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
+  when: not pjsarch.stat.exists
+- unarchive: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2 dest=/usr/local/share/ copy=no
+- file: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs dest=/usr/local/bin/phantomjs state=link
+
+## ignore_errors as if repeating, get: msg: Local modifications exist in repository (force=no).
+- name: git clone sketchy
+  git: repo=https://github.com/Netflix/sketchy.git
+       dest="{{ sketchy_root }}"
+  ignore_errors: true
+  become: yes
+  become_user: "{{ sketchy_user }}"
+
+- pip: name=virtualenv
+- pip: name="{{ item }}" virtualenv="{{ sketchy_root }}/env-sketchy"
+  with_items:
+    - Celery
+    - Flask
+    - Flask-RESTful
+    - Flask-SQLAlchemy
+    - boto
+    - lxml
+    - requests
+    - subprocess32
+    - tldextract
+    - netaddr
+    - flask_script
+    - gunicorn
+  become: yes
+  become_user: "{{ sketchy_user }}"
+- pip: name="file://{{ sketchy_root }}" virtualenv="{{ sketchy_root }}/env-sketchy"
+  become: yes
+  become_user: "{{ sketchy_user }}"
+
+- name: create db
+  shell: "{{ sketchy_root }}/env-sketchy/bin/python manage.py create_db chdir={{ sketchy_root }}"
+  become: yes
+  become_user: "{{ sketchy_user }}"
+
+- name: ensure redis is bind to localhost
+  lineinfile: dest="{{ redis_conf }}" line='bind 127.0.0.1'
+  notify:
+    - restart redis
+- name: ensure service are enabled and started
+  service: name={{ redis_svc }} state=started enabled=yes
+
+- name: Update config - host
+  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  with_items:
+    - { re: '127.0.0.1', rep: '{{ sketchy_host }}' }
+  when: sketchy_host is defined and sketchy_host != ""
+- name: Update config - port
+  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  with_items:
+    - { re: ':8000', rep: ':{{ sketchy_port }}' }
+  when: sketchy_port is defined and sketchy_port != ""
+- name: Update config - use_ssl
+  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  with_items:
+    - { re: "'use_ssl', False", rep: "'use_ssl', {{ sketchy_use_ssl }}" }
+  when: sketchy_use_ssl is defined and sketchy_use_ssl != ""
+
+- template: src=supervisord.ini dest={{ supervisor_confdir }}/sketchi.{{ supervisor_ext }} mode=0644 owner="{{ sketchy_user }}"
+  notify:
+    - restart supervisor
+- template: src=nginx-sketchy.conf dest="{{ nginx_confdir }}/sketchy.conf" mode=0644
+  notify:
+    - restart nginx
+- include: certificate-selfsigned.yml
+- file: src=/etc/nginx/sites-available/sketchy.conf dest=/etc/nginx/sites-enabled/sketchy.conf state=link
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify:
+    - restart nginx
+
+#- name: start celeri
+#  shell: "cd {{ sketchy_root }} && celery -A sketchy.celery worker &"
+#  become: yes
+#  become_user: "{{ sketchy_user }}"
+
+#- name: start sketchy
+#  shell: "nohup {{ sketchy_root }}/env-sketchy/bin/python manage.py runserver --host {{ sketchy_host }} --port {{ sketchy_port }} chdir={{ sketchy_root }} &"
+#  command: "supervisord -c {{ sketchy_home }}/supervisord.ini"
+#  become: yes
+#  become_user: "{{ sketchy_user }}"
+
+

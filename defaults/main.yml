@@ -1,0 +1,18 @@
+---
+
+## if setting on a separate user
+#sketchy_user: "{{ ansible_ssh_user }}"
+sketchy_user: sketchy
+
+sketchy_home: /var/sketchy
+sketchy_root: /var/sketchy/git
+
+## default values
+sketchy_host: 127.0.0.1
+sketchy_port: 8000
+sketchy_use_ssl: true
+
+# if ssl
+sketchy_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible'
+sketchy_certduration: 1095
+
