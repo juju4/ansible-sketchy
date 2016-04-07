@@ -2,7 +2,7 @@
 
 ## if setting on a separate user
 #sketchy_user: "{{ ansible_ssh_user }}"
-sketchy_user: sketchy
+sketchy_user: _sketchy
 
 sketchy_home: /var/sketchy
 sketchy_root: /var/sketchy/git

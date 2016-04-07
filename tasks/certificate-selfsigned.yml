@@ -1,5 +1,12 @@
 ---
 
+- set_fact:
+    certificate_cn: "{{ ansible_fqdn }}"
+## Travis error: "asn1 encoding routines:ASN1_mbstring_ncopy:string too longi:a_mbstr.c:154:maxsize=64" as cn=testing-gce-4d114f77-0ff1-41fb-bd33-22879d3249da.c.eco-emissary-99515.internal
+- set_fact:
+    certificate_cn: "testing-travis.internal"
+  when: env.stdout.find('TRAVIS=true') != -1
+
 - name: apt | sketchy packages dependencies - certificate
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
   with_items:
@@ -18,7 +25,7 @@
 - stat: path=/etc/ssl/{{ ansible_fqdn }}.crt
   register: localsslcert
 - name: Generale SSL self-signed certificate
-  command: openssl req -x509 -nodes -sha256 -days {{ sketchy_certduration }} -newkey rsa:2048 -subj "{{ sketchy_certinfo }}/CN={{ ansible_fqdn }}" -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key -out /etc/ssl/{{ ansible_fqdn }}.crt
+  command: openssl req -x509 -nodes -sha256 -days {{ sketchy_certduration }} -newkey rsa:2048 -subj "{{ sketchy_certinfo }}/CN={{ certificate_cn }}" -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key -out /etc/ssl/{{ ansible_fqdn }}.crt
   when: not localsslcert.stat.exists
 - file: "path={{ ssl_privatedir }}/{{ ansible_fqdn }}.key owner=root group={{ ssl_user }} mode=0440"
 
