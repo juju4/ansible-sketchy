@@ -1,13 +1,4 @@
 ---
-- set_fact:
-    redis_svc: redis-server
-    redis_conf: /etc/redis/redis.conf
-    supervisor_svc: supervisor
-    supervisor_confdir: /etc/supervisor/conf.d
-    supervisor_ext: conf
-    nginx_confdir: /etc/nginx/sites-available
-    ssl_user: ssl-cert
-    ssl_privatedir: /etc/ssl/private
 
 - name: apt | sketchy packages dependencies
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
@@ -28,4 +19,5 @@
     - supervisor
     - gunicorn
     - nginx
+    - acl
 

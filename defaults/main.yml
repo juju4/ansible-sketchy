@@ -15,4 +15,6 @@ sketchy_use_ssl: true
 # if ssl
 sketchy_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible'
 sketchy_certduration: 1095
+#sketchy_nginx_listen: 0.0.0.0:443
+sketchy_nginx_listen: 127.0.0.1:443
 

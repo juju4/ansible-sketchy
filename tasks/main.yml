@@ -1,4 +1,12 @@
 ---
+
+- name: Include version-specific variables for Ubuntu.
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+  when: ansible_distribution == 'Ubuntu'
+- name: Include version-specific variables for RedHat
+  include_vars: "RedHat-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
 - name: Debian | sketchy
   include: debian.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -7,16 +15,21 @@
   include: redhat.yml
   when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- user: name="{{ sketchy_user }}" comment="Sketchy user" home="{{ sketchy_home }}"
+- name: create sketchy user
+  user: name="{{ sketchy_user }}" comment="Sketchy user" home="{{ sketchy_home }}"
+  become: yes
 
-- stat: path=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
+- name: check if phantomjs archive is available
+  stat: path=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
   register: pjsarch
 - name: download phantomjs 1.9
   get_url: url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
     dest=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
   when: not pjsarch.stat.exists
-- unarchive: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2 dest=/usr/local/share/ copy=no
-- file: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs dest=/usr/local/bin/phantomjs state=link
+- name: uncompress phantomjs archive
+  unarchive: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2 dest=/usr/local/share/ copy=no
+- name: symlink phantomjs to usual bin dir
+  file: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs dest=/usr/local/bin/phantomjs state=link
 
 ## ignore_errors as if repeating, get: msg: Local modifications exist in repository (force=no).
 - name: git clone sketchy
@@ -26,8 +39,10 @@
   become: yes
   become_user: "{{ sketchy_user }}"
 
-- pip: name=virtualenv
-- pip: name="{{ item }}" virtualenv="{{ sketchy_root }}/env-sketchy"
+- name: install pip virtualenv
+  pip: name=virtualenv
+- name: install sketchy pip dependencies inside virtualenv
+  pip: name="{{ item }}" virtualenv="{{ sketchy_root }}/env-sketchy"
   with_items:
     - Celery
     - Flask
@@ -43,12 +58,13 @@
     - gunicorn
   become: yes
   become_user: "{{ sketchy_user }}"
-- pip: name="file://{{ sketchy_root }}" virtualenv="{{ sketchy_root }}/env-sketchy"
+- name: install local sketchy pip environment
+  pip: name="file://{{ sketchy_root }}" virtualenv="{{ sketchy_root }}/env-sketchy"
   become: yes
   become_user: "{{ sketchy_user }}"
 
-- name: create db
-  shell: "{{ sketchy_root }}/env-sketchy/bin/python manage.py create_db chdir={{ sketchy_root }}"
+- name: create sketchy db
+  shell: "{{ sketchy_root }}/env-sketchy/bin/python manage.py create_db chdir={{ sketchy_root }} creates={{ sketchy_root }}/sketchy-db.db"
   become: yes
   become_user: "{{ sketchy_user }}"
 
@@ -75,27 +91,20 @@
     - { re: "'use_ssl', False", rep: "'use_ssl', {{ sketchy_use_ssl }}" }
   when: sketchy_use_ssl is defined and sketchy_use_ssl != ""
 
-- template: src=supervisord.ini dest={{ supervisor_confdir }}/sketchi.{{ supervisor_ext }} mode=0644 owner="{{ sketchy_user }}"
+- name: set sketchy supervisor config
+  template: src=supervisor.ini dest={{ supervisor_confdir }}/sketchi.{{ supervisor_ext }} mode=0644 owner="{{ sketchy_user }}"
   notify:
     - restart supervisor
-- template: src=nginx-sketchy.conf dest="{{ nginx_confdir }}/sketchy.conf" mode=0644
+- name: configure nginx for sketchy
+  template: src=nginx-sketchy.conf dest="{{ nginx_confdir }}/sketchy.conf" mode=0644
   notify:
     - restart nginx
+
 - include: certificate-selfsigned.yml
-- file: src=/etc/nginx/sites-available/sketchy.conf dest=/etc/nginx/sites-enabled/sketchy.conf state=link
+
+- name: enable sketchy nginx
+  file: src=/etc/nginx/sites-available/sketchy.conf dest=/etc/nginx/sites-enabled/sketchy.conf state=link
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   notify:
     - restart nginx
-
-#- name: start celeri
-#  shell: "cd {{ sketchy_root }} && celery -A sketchy.celery worker &"
-#  become: yes
-#  become_user: "{{ sketchy_user }}"
-
-#- name: start sketchy
-#  shell: "nohup {{ sketchy_root }}/env-sketchy/bin/python manage.py runserver --host {{ sketchy_host }} --port {{ sketchy_port }} chdir={{ sketchy_root }} &"
-#  command: "supervisord -c {{ sketchy_home }}/supervisord.ini"
-#  become: yes
-#  become_user: "{{ sketchy_user }}"
-
 

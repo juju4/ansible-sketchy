@@ -1,9 +1,7 @@
 ---
 
 - name: restart supervisor
-  service: name={{ supervisor_svc }} state=restarted
-## temporary fix
-  ignore_errors: true
+  service: name={{ supervisor_svc }} state=restarted sleep=5
 
 - name: restart redis
   service: name={{ redis_svc }} state=restarted
