@@ -103,7 +103,7 @@
 - include: certificate-selfsigned.yml
 
 - name: enable sketchy nginx
-  file: src=/etc/nginx/sites-available/sketchy.conf dest=/etc/nginx/sites-enabled/sketchy.conf state=link
+  file: "src={{ nginx_confdir }}/sketchy.conf dest=/etc/nginx/sites-enabled/sketchy.conf state=link"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   notify:
     - restart nginx

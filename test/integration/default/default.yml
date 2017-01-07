@@ -5,5 +5,5 @@
 #  vars:
 #    - a:
   roles:
-    - sketchy
+    - juju4.sketchy
 

@@ -23,7 +23,7 @@
 - name: check if existing certificate
   stat: path=/etc/ssl/{{ ansible_fqdn }}.crt
   register: localsslcert
-- name: Generale SSL self-signed certificate
+- name: Generate SSL self-signed certificate
   command: openssl req -x509 -nodes -sha256 -days {{ sketchy_certduration }} -newkey rsa:2048 -subj "{{ sketchy_certinfo }}/CN={{ certificate_cn }}" -keyout {{ ssl_privatedir }}/{{ ansible_fqdn }}.key -out /etc/ssl/{{ ansible_fqdn }}.crt
   when: not localsslcert.stat.exists
 - name: ensure permissions on key file are correct
