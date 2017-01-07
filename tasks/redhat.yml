@@ -2,22 +2,7 @@
 
 - name: yum | sketchy dependencies packages install
   yum: name="{{item}}" state=present update_cache=yes
-  with_items:
-    - git
-    - python
-    - python-pip
-    - libxslt-devel
-    - libxml2-devel
-    - redis
-    - mariadb-libs
-    - mariadb
-    - "@Development tools"
-    - python-devel
-    - mariadb-devel
-    - python-gunicorn
-    - supervisor
-    - nginx
-    - acl
+  with_items: "{{ sketchy_pkgs }}"
 
 #- name: Redhat | Ensure yum-cron is running and enabled on boot.
 #  service: name=yum-cron state=started enabled=yes

@@ -2,22 +2,5 @@
 
 - name: apt | sketchy packages dependencies
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
-  with_items:
-    - git
-    - curl
-    - python
-    - python-dev
-    - python-pip
-    - python-psycopg2
-    - libmysqlclient-dev
-    - libxslt1-dev
-    - libxml2-dev
-    - libpq-dev
-    - libfontconfig1
-    - mysql-client
-    - redis-server
-    - supervisor
-    - gunicorn
-    - nginx
-    - acl
+  with_items: "{{ sketchy_pkgs }}"
 

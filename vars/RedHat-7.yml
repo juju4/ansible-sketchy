@@ -9,3 +9,20 @@ nginx_confdir: /etc/nginx/conf.d
 ssl_user: root
 ssl_privatedir: /etc/ssl
 
+sketchy_pkgs:
+    - git
+    - python
+    - python-pip
+    - libxslt-devel
+    - libxml2-devel
+    - redis
+    - mariadb-libs
+    - mariadb
+    - "@Development tools"
+    - python-devel
+    - mariadb-devel
+    - python-gunicorn
+    - supervisor
+    - nginx
+    - acl
+

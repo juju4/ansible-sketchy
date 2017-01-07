@@ -9,3 +9,22 @@ nginx_confdir: /etc/nginx/sites-available
 ssl_user: ssl-cert
 ssl_privatedir: /etc/ssl/private
 
+sketchy_pkgs:
+    - git
+    - curl
+    - python
+    - python-dev
+    - python-pip
+    - python-psycopg2
+    - libmysqlclient-dev
+    - libxslt1-dev
+    - libxml2-dev
+    - libpq-dev
+    - libfontconfig1
+    - mysql-client
+    - redis-server
+    - supervisor
+    - gunicorn
+    - nginx
+    - acl
+
