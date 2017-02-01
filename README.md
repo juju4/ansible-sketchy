@@ -1,3 +1,5 @@
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-sketchy.svg?branch=master)](https://travis-ci.org/juju4/ansible-sketchy)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-sketchy.svg?branch=devel)](https://travis-ci.org/juju4/ansible-sketchy/branches)
 # Sketchy ansible role
 
 Ansible role to setup Netflix sketchy.
@@ -8,6 +10,8 @@ Sketchy is a task based API for taking screenshots and scraping text from websit
 ### Ansible
 It was tested on the following versions:
  * 1.9
+ * 2.0
+ * 2.2
 
 ### Operating systems
 
@@ -26,7 +30,7 @@ For example
 ```
 - host: myhost
   roles:
-    - sketchy
+    - juju4.sketchy
 ```
 
 And connect at the end on https://IP/api/v1.0/capture.
