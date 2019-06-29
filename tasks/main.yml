@@ -75,7 +75,10 @@
   become_user: "{{ sketchy_user }}"
 
 - name: ensure redis is bind to localhost
-  lineinfile: dest="{{ redis_conf }}" line='bind 127.0.0.1'
+  lineinfile:
+    dest: "{{ redis_conf }}"
+    regexp: '^bind .*'
+    line: 'bind 127.0.0.1'
   notify:
     - restart redis
 - name: ensure service are enabled and started
