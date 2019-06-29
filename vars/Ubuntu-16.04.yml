@@ -27,3 +27,8 @@ sketchy_pkgs:
     - gunicorn
     - nginx
     - acl
+    - python3-pip
+    - python-virtualenv
+    - python3-dev
+
+python_bin: python3
