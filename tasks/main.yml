@@ -33,8 +33,10 @@
 
 ## ignore_errors as if repeating, get: msg: Local modifications exist in repository (force=no).
 - name: git clone sketchy
-  git: repo=https://github.com/Netflix/sketchy.git
-       dest="{{ sketchy_root }}"
+  git:
+    repo: https://github.com/Netflix/sketchy.git
+    dest: "{{ sketchy_root }}"
+    dest: "{{ sketchy_version | default('HEAD') }}"
   ignore_errors: true
   become: yes
   become_user: "{{ sketchy_user }}"
@@ -42,20 +44,21 @@
 - name: install pip virtualenv
   pip: name=virtualenv
 - name: install sketchy pip dependencies inside virtualenv
-  pip: name="{{ item }}" virtualenv="{{ sketchy_root }}/env-sketchy"
-  with_items:
-    - Celery
-    - Flask
-    - Flask-RESTful
-    - Flask-SQLAlchemy
-    - boto
-    - lxml
-    - requests
-    - subprocess32
-    - tldextract
-    - netaddr
-    - flask_script
-    - gunicorn
+  pip:
+    name:
+      - Celery
+      - Flask
+      - Flask-RESTful
+      - Flask-SQLAlchemy
+      - boto
+      - lxml
+      - requests
+      - subprocess32
+      - tldextract
+      - netaddr
+      - flask_script
+      - gunicorn
+    virtualenv: "{{ sketchy_root }}/env-sketchy"
   become: yes
   become_user: "{{ sketchy_user }}"
 - name: install local sketchy pip environment
@@ -64,7 +67,10 @@
   become_user: "{{ sketchy_user }}"
 
 - name: create sketchy db
-  shell: "{{ sketchy_root }}/env-sketchy/bin/python manage.py create_db chdir={{ sketchy_root }} creates={{ sketchy_root }}/sketchy-db.db"
+  command: "{{ sketchy_root }}/env-sketchy/bin/python manage.py create_db"
+  args:
+    chdir: "{{ sketchy_root }}"
+    creates: "{{ sketchy_root }}/sketchy-db.db"
   become: yes
   become_user: "{{ sketchy_user }}"
 
