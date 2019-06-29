@@ -1,9 +1,9 @@
 ---
 
 - name: yum | sketchy dependencies packages install
-  yum: name="{{item}}" state=present update_cache=yes
-  with_items: "{{ sketchy_pkgs }}"
+  yum: name="{{ sketchy_pkgs }}" state=present update_cache=yes
+  register: pkg_result
+  until: pkg_result is success
 
 #- name: Redhat | Ensure yum-cron is running and enabled on boot.
 #  service: name=yum-cron state=started enabled=yes
-

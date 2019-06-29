@@ -1,6 +1,6 @@
 ---
 
 - name: apt | sketchy packages dependencies
-  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
-  with_items: "{{ sketchy_pkgs }}"
-
+  apt: name={{ sketchy_pkgs }} state=present update_cache=yes cache_valid_time=3600
+  register: pkg_result
+  until: pkg_result is success
