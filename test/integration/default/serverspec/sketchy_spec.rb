@@ -10,7 +10,7 @@ set :backend, :exec
 #end
 
 
-describe command('curl -sSq "http://localhost:8000/eager | tee /tmp/sketchy-root.out') do
+describe command('curl -sSq http://localhost:8000/eager | tee /tmp/sketchy-root.out') do
   its(:stdout) { should_not match /<title>404 Not Found<\/title>/ }
   its(:stdout) { should match /URL cannot be blank/ }
   its(:exit_status) { should eq 0 }
