@@ -36,7 +36,7 @@
   git:
     repo: https://github.com/Netflix/sketchy.git
     dest: "{{ sketchy_root }}"
-    dest: "{{ sketchy_version | default('HEAD') }}"
+    version: "{{ sketchy_version | default('HEAD') }}"
   ignore_errors: true
   become: yes
   become_user: "{{ sketchy_user }}"
