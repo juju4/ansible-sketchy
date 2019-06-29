@@ -59,7 +59,6 @@
       - flask_script
       - gunicorn
     virtualenv: "{{ sketchy_root }}/env-sketchy"
-    virtualenv_python: "{{ python_bin }}"
   become: yes
   become_user: "{{ sketchy_user }}"
 - name: install local sketchy pip environment

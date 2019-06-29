@@ -25,9 +25,3 @@ sketchy_pkgs:
     - supervisor
     - nginx
     - acl
-    - python36-devel
-    - python36-pip
-    - python-virtualenv
-    - python36-devel
-
-python_bin: python3.6
