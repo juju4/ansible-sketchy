@@ -8,7 +8,7 @@ sketchy_home: /var/sketchy
 sketchy_root: /var/sketchy/git
 
 ## default values
-sketchy_host: 127.0.0.1
+sketchy_host: localhost
 sketchy_port: 8000
 sketchy_use_ssl: true
 
@@ -16,4 +16,4 @@ sketchy_use_ssl: true
 sketchy_certinfo: '/C=US/ST=CA/L=San Francisco/O=Ansible'
 sketchy_certduration: 1095
 #sketchy_nginx_listen: 0.0.0.0:443
-sketchy_nginx_listen: 127.0.0.1:443
+sketchy_nginx_listen: localhost:443
