@@ -21,6 +21,8 @@ sketchy_pkgs:
     - libxslt1-dev
     - libxml2-dev
     - libpq-dev
+    - libssl-dev
+    - libcrypto++-dev
     - libfontconfig1
     - mysql-client
     - redis-server
