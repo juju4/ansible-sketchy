@@ -46,6 +46,13 @@
 
 - name: install pip virtualenv
   pip: name=virtualenv
+- name: install werkzeug inside virtualenv - werkzeug#1616
+  pip:
+    name: werkzeug
+    version: 0.16.1
+    virtualenv: "{{ sketchy_root }}/env-sketchy"
+  become: yes
+  become_user: "{{ sketchy_user }}"
 - name: install sketchy pip dependencies inside virtualenv
   pip:
     name:
