@@ -44,8 +44,19 @@
   become: yes
   become_user: "{{ sketchy_user }}"
 
+- name: upgrade pip
+  pip:
+    name: pip
+    version: 20.0.2
+  when: ansible_distribution_release == 'xenial' or ansible_distribution_release == '7'
+
 - name: install pip virtualenv
-  pip: name=virtualenv
+  pip:
+    name:
+      - zipp
+      - virtualenv
+    state: present
+
 - name: install werkzeug inside virtualenv - werkzeug#1616
   pip:
     name: werkzeug
