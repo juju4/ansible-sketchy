@@ -16,7 +16,10 @@
   when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: create sketchy user
-  user: name="{{ sketchy_user }}" comment="Sketchy user" home="{{ sketchy_home }}"
+  user:
+    name: "{{ sketchy_user }}"
+    comment: "Sketchy user"
+    home: "{{ sketchy_home }}"
   become: yes
 
 - name: check if phantomjs archive is available
@@ -85,23 +88,36 @@
   service: name={{ redis_svc }} state=started enabled=yes
 
 - name: Update config - host
-  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  replace:
+    dest: "{{ sketchy_root }}/config-default.py"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
   with_items:
     - { re: '127.0.0.1', rep: '{{ sketchy_host }}' }
   when: sketchy_host is defined and sketchy_host
 - name: Update config - port
-  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  replace:
+    dest: "{{ sketchy_root }}/config-default.py"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
   with_items:
     - { re: ':8000', rep: ':{{ sketchy_port }}' }
   when: sketchy_port is defined and sketchy_port
 - name: Update config - use_ssl
-  replace: dest="{{ sketchy_root }}/config-default.py" regexp="{{ item.re }}" replace="{{ item.rep }}"
+  replace:
+    dest: "{{ sketchy_root }}/config-default.py"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
   with_items:
     - { re: "'use_ssl', False", rep: "'use_ssl', {{ sketchy_use_ssl }}" }
   when: sketchy_use_ssl is defined and sketchy_use_ssl|bool
 
 - name: set sketchy supervisor config
-  template: src=supervisor.ini dest={{ supervisor_confdir }}/sketchi.{{ supervisor_ext }} mode=0644 owner="{{ sketchy_user }}"
+  template:
+    src: supervisor.ini
+    dest: "{{ supervisor_confdir }}/sketchi.{{ supervisor_ext }}"
+    mode: '0644'
+    owner: "{{ sketchy_user }}"
   notify:
     - restart supervisor
 - name: configure nginx for sketchy
