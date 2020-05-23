@@ -8,6 +8,7 @@ Sketchy is a task based API for taking screenshots and scraping text from websit
 Please note
 * project is based on [PhantomJS which is archived](https://github.com/ariya/phantomjs/issues/15344)
 * migration to chrome headless is [pending](https://github.com/Netflix/sketchy/issues/40)
+* [Last commit is Jun 2019](https://github.com/Netflix/sketchy/commits/master)
 
 ## Requirements & Dependencies
 
@@ -17,11 +18,12 @@ It was tested on the following versions:
  * 2.0
  * 2.2
  * 2.5
+ * 2.9
 
 ### Operating systems
 
 Tested on Ubuntu 14.04, 16.04 for now but should work on 12.04 and similar debian based systems.
-Pre-support for 18.04 but phantomjs issue.
+Pre-support for 18.04 and 20.04 but phantomjs issue with 1.9.7. Working with 3.0-dev.
 More work is needed for redhat-based distribution or other Unix.
 
 ### Dependencies
