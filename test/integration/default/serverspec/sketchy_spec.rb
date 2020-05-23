@@ -16,8 +16,8 @@ describe command('curl -sSq http://localhost:8000/eager | tee /tmp/sketchy-root.
   its(:exit_status) { should eq 0 }
 end
 
-describe command('curl -sSq "http://localhost:8000/eager?url=http://google.com&type=html" | tee /tmp/sketchy-capture.out'), :if => os[:family] == 'ubuntu' && os[:release] == '18.04'  do
-  its(:stdout) { should match /<title>Google<\/title>/ }
-  its(:stderr) { should_not match /Empty reply from server/ }
-  its(:exit_status) { should eq 0 }
-end
+#describe command('curl -sSq "http://localhost:8000/eager?url=http://google.com&type=html" | tee /tmp/sketchy-capture.out'), :if => os[:family] == 'ubuntu' && os[:release] == '18.04'  do
+#  its(:stdout) { should match /<title>Google<\/title>/ }
+#  its(:stderr) { should_not match /Empty reply from server/ }
+#  its(:exit_status) { should eq 0 }
+#end
