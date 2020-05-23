@@ -1,0 +1,24 @@
+---
+
+- name: git clone phantomjs
+  git:
+    repo: https://github.com/ariya/phantomjs.git
+    dest: "{{ sketchy_home }}/phantomjs"
+    version: "{{ phantomjs_version | default('31722964623eea3122cd18906508ddb564febc8a') }}"
+
+- name: install phantomjs build dependencies
+  package:
+    name:
+      - cmake
+      - libqt5webkit5-dev
+    state: present
+
+- name: build phantomjs
+  command: "{{ item.c }}"
+  args:
+    chdir: "{{ sketchy_home }}/phantomjs"
+    creates: "{{ item.t }}"
+  with_items:
+    - { c: './configure', t: "{{ sketchy_home }}/phantomjs/Makefile" }
+    - { c: 'make', t: "{{ sketchy_home }}/phantomjs/bin/phantomjs" }
+    - { c: 'make install', t: '/usr/local/bin/phantomjs' }

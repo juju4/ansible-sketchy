@@ -22,17 +22,7 @@
     home: "{{ sketchy_home }}"
   become: yes
 
-- name: check if phantomjs archive is available
-  stat: path=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
-  register: pjsarch
-- name: download phantomjs 1.9
-  get_url: url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
-    dest=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2
-  when: not pjsarch.stat.exists
-- name: uncompress phantomjs archive
-  unarchive: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64.tar.bz2 dest=/usr/local/share/ copy=no
-- name: symlink phantomjs to usual bin dir
-  file: src=/usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs dest=/usr/local/bin/phantomjs state=link
+- include: phantomjs.yml
 
 ## ignore_errors as if repeating, get: msg: Local modifications exist in repository (force=no).
 - name: git clone sketchy
