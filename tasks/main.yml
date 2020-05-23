@@ -49,6 +49,16 @@
     version: 20.0.2
   when: ansible_distribution_release == 'xenial' or ansible_distribution_major_version == '7'
 
+- name: Focal | install pip2
+  command: "{{ item.c }}"
+  args:
+    chdir: /usr/local/bin
+    creates: "{{ item.t }}"
+  with_items:
+    - { c: 'curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py', t: '/usr/local/bin/get-pip.py' }
+    - { c: 'python2 /usr/local/bin/get-pip.py', t: '/usr/local/bin/pip2' }
+  when: ansible_distribution_release == 'focal'
+
 - name: install pip virtualenv
   pip:
     name:
