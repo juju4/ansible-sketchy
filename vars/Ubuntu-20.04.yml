@@ -18,7 +18,6 @@ sketchy_pkgs:
     - python2
     - python2-dev
     - python-setuptools
-    - libmysqlclient-dev
     - libmariadb-dev
     - libmariadb-dev-compat
     - libxslt1-dev
