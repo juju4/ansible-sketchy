@@ -56,12 +56,14 @@
       - zipp
       - virtualenv
     state: present
+    executable: "{{ sketchy_python_pip | default('pip') }}"
 
 - name: install werkzeug inside virtualenv - werkzeug#1616
   pip:
     name: werkzeug
     version: 0.16.1
     virtualenv: "{{ sketchy_root }}/env-sketchy"
+    virtualenv_python: "{{ sketchy_python_bin | default('python') }}"
   become: yes
   become_user: "{{ sketchy_user }}"
 - name: install sketchy pip dependencies inside virtualenv
@@ -80,10 +82,14 @@
       - flask_script
       - gunicorn
     virtualenv: "{{ sketchy_root }}/env-sketchy"
+    virtualenv_python: "{{ sketchy_python_bin | default('python') }}"
   become: yes
   become_user: "{{ sketchy_user }}"
 - name: install local sketchy pip environment
-  pip: name="file://{{ sketchy_root }}" virtualenv="{{ sketchy_root }}/env-sketchy"
+  pip:
+    name: "file://{{ sketchy_root }}"
+    virtualenv: "{{ sketchy_root }}/env-sketchy"
+    virtualenv_python: "{{ sketchy_python_bin | default('python') }}"
   become: yes
   become_user: "{{ sketchy_user }}"
 
