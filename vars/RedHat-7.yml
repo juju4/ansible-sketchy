@@ -25,3 +25,7 @@ sketchy_pkgs:
     - supervisor
     - nginx
     - acl
+
+sketchy_phantomjs_build_pkgs:
+  - cmake
+  - qtwebkit-devel

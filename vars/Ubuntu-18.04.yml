@@ -30,3 +30,7 @@ sketchy_pkgs:
     - gunicorn
     - nginx
     - acl
+
+sketchy_phantomjs_build_pkgs:
+  - cmake
+  - libqt5webkit5-dev

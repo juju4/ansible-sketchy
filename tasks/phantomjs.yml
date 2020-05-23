@@ -8,9 +8,7 @@
 
 - name: install phantomjs build dependencies
   package:
-    name:
-      - cmake
-      - libqt5webkit5-dev
+    name: "{{ sketchy_phantomjs_build_pkgs }}"
     state: present
 
 - name: build phantomjs
