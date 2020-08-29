@@ -16,7 +16,6 @@ sketchy_pkgs:
     - libxslt-devel
     - libxml2-devel
     - redis
-    - mariadb-libs
     - mariadb
     - "@Development tools"
     - python3-devel
