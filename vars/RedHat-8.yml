@@ -11,17 +11,17 @@ ssl_privatedir: /etc/ssl
 
 sketchy_pkgs:
     - git
-    - python
-    - python-pip
+    - python3
+    - python3-pip
     - libxslt-devel
     - libxml2-devel
     - redis
     - mariadb-libs
     - mariadb
     - "@Development tools"
-    - python-devel
+    - python3-devel
     - mariadb-devel
-    - python-gunicorn
+    - python3-gunicorn
     - supervisor
     - nginx
     - acl
@@ -29,3 +29,6 @@ sketchy_pkgs:
 sketchy_phantomjs_build_pkgs:
   - cmake
   - qtwebkit-devel
+
+sketchy_python_bin: python3
+sketchy_python_pip: pip3
