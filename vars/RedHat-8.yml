@@ -13,6 +13,7 @@ sketchy_pkgs:
     - git
     - python3
     - python3-pip
+    - python3-virtualenv
     - libxslt-devel
     - libxml2-devel
     - redis
